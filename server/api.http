@@ -1,0 +1,92 @@
+# POST http://localhost:5000/api/blogs
+# Content-Type: application/json
+
+# {
+#   "title": "Architecting a Premium Portfolio with Next.js and Express",
+#   "slug": "architecting-premium-portfolio-nextjs-express",
+#   "summary": "An in-depth look into managing modern monorepos, dealing with ISP DNS blocks, and structural data modeling.",
+#   "content": "This is the rich markdown body of your blog post. You can write long form tech tutorials here!",
+#   "coverImage": "/bg/bg-2.png",
+#   "tags": ["Next.js", "Express", "TypeScript"],
+#   "status": "published",
+#   "readTime": "4 min read"
+# }
+
+
+
+# ### Create a New Project Entry
+# POST http://localhost:5000/api/projects
+# Content-Type: application/json
+
+# {
+#   "title": "Neuro Habit AI Ecosystem",
+#   "slug": "neuro-habit-ai-ecosystem",
+#   "description": "An intelligent background agent orchestration application designed to track and structure user productivity patterns.",
+#   "content": "This is a detailed production case study of the habit tracking application. It can house complete design spec layout documentation.",
+#   "thumbnail": "/bg/bg-2.png",
+#   "tags": ["Next.js", "Express", "LangChain", "MongoDB"],
+#   "featured": true
+# }
+
+
+# PUT http://localhost:5000/api/projects/id/6a36491cd7e086ed5eaaf3ca
+# Content-Type: application/json
+
+# {
+#   "title": "Neuro Habit AI Ecosystem V2",
+#   "description": "An upgraded version utilizing custom LangChain automation models."
+# }
+
+# ### Delete a Project Entry (Replace with your actual ID)
+# DELETE http://localhost:5000/api/projects/id/6a36491cd7e086ed5eaaf3ca
+
+
+### Variables Definition Setup
+@baseUrl = http://localhost:5000/api
+@adminToken = spiderman
+
+### 1. SEED MARVEL CINEMA RELEASE (Category: movies)
+POST {{baseUrl}}/blogs
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Spider-Man: Beyond the Spider-Verse Release Date & Plot Predictions",
+  "slug": "spiderman-beyond-the-spider-verse-release-tracker",
+  "summary": "Everything we know about the epic conclusion to Miles Morales' trilogy, theatrical release updates, and deep-dive multiversal plot armor theories.",
+  "category": "movies",
+  "coverImage": "https://images.unsplash.com/photo-1635805737707-575885ab0820",
+  "readTime": "6 min read",
+  "tags": ["Spider-Man", "Marvel", "Sony Pictures", "Cinema"],
+  "contentBlocks": [
+    {
+      "type": "markdown",
+      "body": "The multiversal animated saga is heading toward its ultimate endgame. Following the cliffhanger of the previous chapter, fans globally are mapping out timelines waiting for the spectacular arrival of Beyond the Spider-Verse."
+    },
+    {
+      "type": "highlight_alert",
+      "body": "Theatrical Update: Production insiders report that voice recording cycles are nearing full completion, tracking safely for an optimized global theatrical launch window."
+    },
+    {
+      "type": "cast_grid",
+      "castMembers": [
+        {
+          "name": "Shameik Moore",
+          "characterName": "Miles Morales / Spider-Man",
+          "actorImage": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
+          "description": "Miles finds himself trapped in Earth-42, facing an alternate version of himself, while desperately trying to make it home to save his father."
+        },
+        {
+          "name": "Hailee Steinfeld",
+          "characterName": "Gwen Stacy / Spider-Gwen",
+          "actorImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
+          "description": "Gwen commands her own elite counter-squad composed of spectacular spider-variants to track and salvage Miles from across timelines."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "body": "Visually, the next chapter promises to stretch rendering technology to its absolute limit, deploying over six distinct foundational comic-art aesthetics layered simultaneously in a single frame."
+    }
+  ]
+}
