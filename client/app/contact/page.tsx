@@ -1,6 +1,3 @@
-
-
-
 // 'use client';
 
 // import React, { useState } from 'react';
@@ -37,7 +34,7 @@
 
 //   return (
 //     /* Changed wrapper to use h-screen and overflow-hidden on desktop to guarantee no scrolling.
-//       Flex layout perfectly centers the card inside the available viewport block.
+//        Flex layout perfectly centers the card inside the available viewport block.
 //     */
 //     <div className="relative w-full h-screen lg:overflow-hidden flex flex-col justify-center items-center font-mono selection:bg-zinc-950 selection:text-white dark:selection:bg-white dark:selection:text-zinc-950 p-4 sm:p-6 lg:p-8">
       
@@ -51,7 +48,7 @@
 
 //       {/* DESKTOP BACKGROUND */}
 //       <div
-//         className="fixed inset-0 z-0  pointer-events-none bg-no-repeat bg-bottom bg-cover hidden md:block"
+//         className="fixed inset-0 z-0  pointer-events-none bg-no-repeat bg-bottom bg-contain hidden md:block"
 //         style={{
 //           backgroundImage: "url('/bg/bg-1.jpg')",
 //         }}
@@ -59,7 +56,8 @@
 
 //       {/* Main Structural Card Body */}
 //       <div className="relative z-10 w-full max-w-5xl">
-//         <div className="border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden bg-white dark:bg-zinc-950 grid grid-cols-1 lg:grid-cols-12 shadow-2xs">
+//         {/* CHANGED: Swapped shadow-2xs for shadow-2xl and dark:shadow-zinc-950/50 for a clean dark mode glow/depth */}
+//         <div className="border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden bg-white dark:bg-zinc-950 grid grid-cols-1 lg:grid-cols-12 shadow-2xl dark:shadow-zinc-950/50">
           
 //           {/* Left Panel Compartment (Branding Deck) */}
 //           <div className="lg:col-span-5 p-5 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/10">
@@ -186,7 +184,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { fetchAPI } from '@/src/lib/api';
 
 export default function ContactPage() {
   const [name, setName] = useState('');
@@ -200,11 +197,14 @@ export default function ContactPage() {
     setStatus('sending');
 
     try {
-      await fetchAPI('/contact', {
+      // 🚨 FIXED: Hardcoded live backend URL to bypass fetchAPI/Vercel cache issues
+      const res = await fetch('https://premium-portfolio-kohl.vercel.app/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, subject, message }),
       });
+
+      if (!res.ok) throw new Error('Transmission failed');
 
       setStatus('success');
       setName('');
@@ -218,33 +218,25 @@ export default function ContactPage() {
   };
 
   return (
-    /* Changed wrapper to use h-screen and overflow-hidden on desktop to guarantee no scrolling.
-       Flex layout perfectly centers the card inside the available viewport block.
-    */
     <div className="relative w-full h-screen lg:overflow-hidden flex flex-col justify-center items-center font-mono selection:bg-zinc-950 selection:text-white dark:selection:bg-white dark:selection:text-zinc-950 p-4 sm:p-6 lg:p-8">
       
       {/* MOBILE BACKGROUND */}
       <div
         className="fixed inset-0 z-0 opacity-10 pointer-events-none bg-no-repeat bg-bottom bg-contain block md:hidden"
-        style={{
-          backgroundImage: "url('/bg/one-piece.jpg')", 
-        }}
+        style={{ backgroundImage: "url('/bg/one-piece.jpg')" }}
       />
 
       {/* DESKTOP BACKGROUND */}
       <div
-        className="fixed inset-0 z-0  pointer-events-none bg-no-repeat bg-bottom bg-contain hidden md:block"
-        style={{
-          backgroundImage: "url('/bg/bg-1.jpg')",
-        }}
+        className="fixed inset-0 z-0 pointer-events-none bg-no-repeat bg-bottom bg-contain hidden md:block"
+        style={{ backgroundImage: "url('/bg/bg-1.jpg')" }}
       />
 
       {/* Main Structural Card Body */}
       <div className="relative z-10 w-full max-w-5xl">
-        {/* CHANGED: Swapped shadow-2xs for shadow-2xl and dark:shadow-zinc-950/50 for a clean dark mode glow/depth */}
         <div className="border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden bg-white dark:bg-zinc-950 grid grid-cols-1 lg:grid-cols-12 shadow-2xl dark:shadow-zinc-950/50">
           
-          {/* Left Panel Compartment (Branding Deck) */}
+          {/* Left Panel Compartment */}
           <div className="lg:col-span-5 p-5 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/10">
             <div className="space-y-6 lg:space-y-10">
               <nav>
@@ -280,74 +272,67 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Right Panel Compartment (Form Processing Component Layer) */}
+          {/* Right Panel Compartment */}
           <div className="lg:col-span-7 p-5 sm:p-8 bg-white dark:bg-zinc-950 flex flex-col justify-center">
             <form onSubmit={handleSendMessage} className="space-y-4 flex flex-col">
               
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-semibold pl-0.5">01 / Your Name</label>
-                    <input 
-                      type="text" 
-                      value={name} 
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      placeholder="John Doe" 
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-50/50 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-zinc-950 dark:text-zinc-50 outline-none focus:border-zinc-950 dark:focus:border-zinc-50 focus:bg-white dark:focus:bg-zinc-950 transition-all uppercase tracking-wider"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-semibold pl-0.5">02 / Email Address</label>
-                    <input 
-                      type="email" 
-                      value={email} 
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      placeholder="hello@example.com" 
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-50/50 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-zinc-950 dark:text-zinc-50 outline-none focus:border-zinc-950 dark:focus:border-zinc-50 focus:bg-white dark:focus:bg-zinc-950 transition-all uppercase tracking-wider"
-                    />
-                  </div>
-                </div>
-
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-semibold pl-0.5">03 / Subject</label>
+                  <label className="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-semibold pl-0.5">01 / Your Name</label>
                   <input 
                     type="text" 
-                    value={subject} 
-                    onChange={(e) => setSubject(e.target.value)}
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)}
                     required
-                    placeholder="Project Inquiry / Collaboration" 
+                    placeholder="John Doe" 
                     className="w-full px-3.5 py-2.5 text-xs bg-zinc-50/50 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-zinc-950 dark:text-zinc-50 outline-none focus:border-zinc-950 dark:focus:border-zinc-50 focus:bg-white dark:focus:bg-zinc-950 transition-all uppercase tracking-wider"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-semibold pl-0.5">04 / Message</label>
-                  <textarea 
-                    value={message} 
-                    onChange={(e) => setMessage(e.target.value)}
+                  <label className="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-semibold pl-0.5">02 / Email Address</label>
+                  <input 
+                    type="email" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)}
                     required
-                    rows={3}
-                    placeholder="Tell me about your project objectives..." 
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-50/50 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-300 dark:placeholder:text-zinc-800 outline-none focus:border-zinc-950 dark:focus:border-zinc-50 focus:bg-white dark:focus:bg-zinc-950 transition-all uppercase tracking-wider resize-none leading-relaxed"
+                    placeholder="hello@example.com" 
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-50/50 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-zinc-950 dark:text-zinc-50 outline-none focus:border-zinc-950 dark:focus:border-zinc-50 focus:bg-white dark:focus:bg-zinc-950 transition-all uppercase tracking-wider"
                   />
                 </div>
+              </div>
 
-              {/* Action Submit Control Input Layer */}
+              <div className="space-y-1">
+                <label className="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-semibold pl-0.5">03 / Subject</label>
+                <input 
+                  type="text" 
+                  value={subject} 
+                  onChange={(e) => setSubject(e.target.value)}
+                  required
+                  placeholder="Project Inquiry / Collaboration" 
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-50/50 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-zinc-950 dark:text-zinc-50 outline-none focus:border-zinc-950 dark:focus:border-zinc-50 focus:bg-white dark:focus:bg-zinc-950 transition-all uppercase tracking-wider"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-[9px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-semibold pl-0.5">04 / Message</label>
+                <textarea 
+                  value={message} 
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  rows={3}
+                  placeholder="Tell me about your project objectives..." 
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-50/50 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-300 dark:placeholder:text-zinc-800 outline-none focus:border-zinc-950 dark:focus:border-zinc-50 focus:bg-white dark:focus:bg-zinc-950 transition-all uppercase tracking-wider resize-none leading-relaxed"
+                />
+              </div>
+
               <div className="pt-2 self-stretch sm:self-end">
                 <button 
                   type="submit" 
                   disabled={status === 'sending'}
                   className="w-full sm:w-auto px-6 py-2.5 bg-zinc-950 text-white hover:bg-zinc-900 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200 rounded-xl text-[10px] uppercase tracking-[0.25em] font-bold transition-all duration-300 transform active:scale-[0.98] disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  {status === 'sending' ? (
-                    <span>Sending...</span>
-                  ) : status === 'success' ? (
-                    <span>✓ Sent</span>
-                  ) : (
-                    <span>Send Message →</span>
-                  )}
+                  {status === 'sending' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'Send Message →'}
                 </button>
               </div>
 
@@ -358,9 +343,8 @@ export default function ContactPage() {
               )}
             </form>
           </div>
-
         </div>
       </div>
     </div>
-  );  
+  );
 }
