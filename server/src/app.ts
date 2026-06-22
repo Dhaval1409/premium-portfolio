@@ -37,7 +37,6 @@
 // export default app;
 
 
-
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -47,16 +46,21 @@ import projectRoutes from './routes/projectRoutes';
 import authRoutes from './routes/authRoutes'; 
 import contactRoutes from './routes/contactRoutes';
 
+// Load environment variables
 dotenv.config();
 
 const app: Application = express();
 
 // Connect Database
+// Note: Ensure your connectDB handles connection pooling 
+// so it doesn't try to reconnect on every request.
 connectDB();
 
+// Middleware
 app.use(cors());
 app.use(express.json()); 
 
+// Health check route
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'healthy' });
 });
@@ -67,5 +71,5 @@ app.use('/api/blogs', blogRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
 
-// DO NOT USE app.listen() for Vercel
+// Export the app for Vercel
 export default app;
