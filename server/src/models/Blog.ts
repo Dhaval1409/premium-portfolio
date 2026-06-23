@@ -16,6 +16,11 @@ export interface IBlog extends Document {
 
 const BlogSchema = new Schema<IBlog>(
   {
+
+    relatedSlugs: { 
+    type: [String], 
+    default: [] 
+  },
     title: {
       type: String,
       required: true,
@@ -77,6 +82,7 @@ const BlogSchema = new Schema<IBlog>(
   {
     timestamps: true,
   }
+  
 );
 
 export const Blog = model<IBlog>('Blog', BlogSchema);
